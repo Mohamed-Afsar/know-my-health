@@ -48,7 +48,7 @@ def ask_and_get_answer(vector_store, question, k=3):
     from langchain.chat_models import ChatOpenAI
     from langchain.chains import RetrievalQA
 
-    llm = ChatOpenAI(model='gpt-3.5-turbo', temperature=1)
+    llm = ChatOpenAI(model='gpt-4', temperature=1)
 
     retriever = vector_store.as_retriever(seatch_type='similarity', search_kwargs={'k': k})
 
@@ -68,16 +68,10 @@ if __name__ == '__main__':
     load_dotenv(find_dotenv(), override=True)
 
     st.image('img.png')
-    st.subheader('LLM Question-Answering Application 🤖')
-
     with st.sidebar:
-        api_key = st.text_input('OpenAI APK key:', type='password')
-        if api_key:
-            os.environ['OPENAI_API_KEY'] = api_key
-
         uploaded_file = st.file_uploader('Upload a file:', type=['pdf', 'txt', 'docx'])
-        chunk_size = st.number_input('Chunk size:', min_value=100, max_value=2048, value=512, on_change=clear_history)
-        k_val = st.number_input('k:', min_value=1, max_value=20, value=3, on_change=clear_history)
+        chunk_size = 512
+        k_val = 3
         add_data = st.button('Add Data', on_click=clear_history)
 
         if uploaded_file and add_data:
@@ -103,7 +97,7 @@ if __name__ == '__main__':
 
     if question:
         if 'vs' in st.session_state:
-            st.write(f'k: {k_val}')
+            # st.write(f'k: {k_val}')
             answer = ask_and_get_answer(st.session_state.vs, question, k_val)
             st.text_area('LLM Answer: ', value=answer)
 
